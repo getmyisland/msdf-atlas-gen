@@ -14,38 +14,37 @@ if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 endif()
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${outputdir}/${PROJECT_NAME}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${outputdir}/${PROJECT_NAME}")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${outputdir}/${PROJECT_NAME}")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${outputdir}/msdf-atlas-gen")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${outputdir}/msdf-atlas-gen")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${outputdir}/msdf-atlas-gen")
 
 file(GLOB_RECURSE SOURCES "msdf-atlas-gen/*.h" "msdf-atlas-gen/*.hpp" "msdf-atlas-gen/*.cpp")
 
-include_directories(
-    "msdf-atlas-gen"
-    "msdfgen"
-    "msdfgen/include"
+include_directories(msdf-atlas-gen PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/msdf-atlas-gen
+	${CMAKE_CURRENT_SOURCE_DIR}/msdfgen
+	${CMAKE_CURRENT_SOURCE_DIR}/msdfgen/include
 )
 
-add_library(${PROJECT_NAME} STATIC ${SOURCES})
+add_library(msdf-atlas-gen STATIC ${SOURCES})
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)
+target_compile_definitions(msdf-atlas-gen PRIVATE _CRT_SECURE_NO_WARNINGS)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE msdfgen)
+target_link_libraries(msdf-atlas-gen PUBLIC msdfgen)
 
-# Surpress all warnings for target library (Visual Studio)
-target_compile_options(freetype PRIVATE /w)
-target_compile_options(msdfgen PRIVATE /w)
+# Surpress all warnings for msdfgen (Visual Studio)
+target_compile_options(msdfgen PUBLIC /w)
 
 if(WIN32)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)
-    target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+    target_compile_definitions(msdf-atlas-gen PRIVATE _CRT_SECURE_NO_WARNINGS)
+    target_compile_options(msdf-atlas-gen PRIVATE /W4)
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic)
+    target_compile_options(msdf-atlas-gen PRIVATE -Wall -Wextra -pedantic)
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
-    target_compile_options(${PROJECT_NAME} PRIVATE -g)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG=1)
+    target_compile_options(msdf-atlas-gen PRIVATE -g)
+    target_compile_definitions(msdf-atlas-gen PRIVATE DEBUG=1)
 elseif(CMAKE_BUILD_TYPE MATCHES Release)
-    target_compile_options(${PROJECT_NAME} PRIVATE -O3)
+    target_compile_options(msdf-atlas-gen PRIVATE -O3)
 endif()
