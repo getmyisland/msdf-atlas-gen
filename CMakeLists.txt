@@ -27,9 +27,6 @@ target_compile_definitions(msdf-atlas-gen PRIVATE _CRT_SECURE_NO_WARNINGS)
 
 target_link_libraries(msdf-atlas-gen PUBLIC msdfgen)
 
-# Surpress all warnings for msdfgen (Visual Studio)
-target_compile_options(msdfgen PUBLIC /w)
-
 if(WIN32)
     target_compile_definitions(msdf-atlas-gen PRIVATE _CRT_SECURE_NO_WARNINGS)
     target_compile_options(msdf-atlas-gen PRIVATE /W4)
